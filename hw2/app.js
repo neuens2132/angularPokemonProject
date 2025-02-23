@@ -5,28 +5,15 @@ var cardService = require('./services/card-service');
 const { resourceLimits } = require('worker_threads');
 
 var app = express();
-var PORT = 3000
-
-const pokemonApiHeaders = {
-  'X-Api-Key': '535b27c3-24b2-443f-8456-09113f3a3422',
-};
+var PORT = 3000;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Starting page is index.html
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 })
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-});
 
 // Get cards based on the query from both apis
 app.get('/api/v1/cards', async (req, res, next) => {

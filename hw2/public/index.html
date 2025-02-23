@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <script
+       src="https://code.jquery.com/jquery-3.1.1.js"
+       integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+       crossorigin="anonymous">
+    </script>
+    <script src="js/script.js"></script>
+    <title>Cardling</title>
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-left-side">Cardling</div>
+        <div class="nav-right-side" id="nav-right-side" onclick="logout()"></div>
+    </div>
+    <div class="content-window">
+        <!-- <form action="GET" class="login-form" hidden> -->
+            <div class="login" id="login">
+                <input type="text" name="username" class="login-input username" id="username">
+                <input type="password" name="password" class="login-input password" id="password">
+                <input type="submit" class="login-submit login-input" name="Sign In" value="Sign In" onclick="login()">
+            </div>
+        <!-- </form> -->
+        <div class="main-content" id="main-content">
+            <!-- QUERY AND RATE INPUTS/BUTTONS -->
+            <div class="main-selections">
+                <div class="main-selections-left">
+                    <input type="text" name="query" class="selections-input query" id="query">
+                    <button class="selections-submit search" onclick="getCards()">Search</button>
+                </div>
+                <div class="main-selections-right">
+                    <input type="text" name="rating" class="selections-input query" id="rating">
+                    <input type="submit" class="selections-submit rate" name="rate" value="Rate" onclick="updateUserRating()">
+                </div>
+            </div>
+
+            <!-- CARDS AND STUFF -->
+            <div class="main-card-content" id="main-card-content"></div>
+        </div>
+        <div class="loading-overlay" id="loading-overlay">
+            <div class="loading" id="loading">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle fill="#1faddf" stroke="#1faddf" stroke-width="15" r="15" cx="40" cy="65"><animate attributeName="cy" calcMode="spline" dur="2" values="65;135;65;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.4"></animate></circle><circle fill="#1faddf" stroke="#1faddf" stroke-width="15" r="15" cx="100" cy="65"><animate attributeName="cy" calcMode="spline" dur="2" values="65;135;65;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.2"></animate></circle><circle fill="#1faddf" stroke="#1faddf" stroke-width="15" r="15" cx="160" cy="65"><animate attributeName="cy" calcMode="spline" dur="2" values="65;135;65;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="0"></animate></circle></svg>
+            </div>
+        </div>
+        <!-- <center><div class="loading" id="loading">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle fill="#1faddf" stroke="#1faddf" stroke-width="15" r="15" cx="40" cy="65"><animate attributeName="cy" calcMode="spline" dur="2" values="65;135;65;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.4"></animate></circle><circle fill="#1faddf" stroke="#1faddf" stroke-width="15" r="15" cx="100" cy="65"><animate attributeName="cy" calcMode="spline" dur="2" values="65;135;65;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="-.2"></animate></circle><circle fill="#1faddf" stroke="#1faddf" stroke-width="15" r="15" cx="160" cy="65"><animate attributeName="cy" calcMode="spline" dur="2" values="65;135;65;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="indefinite" begin="0"></animate></circle></svg>
+        </div></center> -->
+    </div>
+</body>
+</html>

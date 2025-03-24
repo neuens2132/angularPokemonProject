@@ -149,10 +149,11 @@ td, th {
 
 /** GAME BOARD **/
 .game-board-content {
-  width: 70%;
+  width: 100vb;
   margin: 0 auto;
   display: none;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   padding: 2%;
   box-sizing: border-box;

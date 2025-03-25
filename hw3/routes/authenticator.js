@@ -52,7 +52,7 @@ passport.use(new LocalStrategy(async (username, password, done) => {
    if (req.isAuthenticated()) {
      return res.status(200).json({ authenticated: true, user: req.user });
    }
-   res.status(401).json({ authenticated: false });
+   res.status(200).json({ authenticated: false });
  });
  
 module.exports = router;

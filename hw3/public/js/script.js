@@ -1,16 +1,33 @@
+function goToLogin() {
+    const gameTable = document.getElementsByClassName('game-table')[0];
+    const rows = gameTable.getElementsByTagName('tr');
+    for (let i = rows.length - 1; i > 0; i--) {
+        gameTable.deleteRow(i);
+    }
+    document.getElementById('player').innerHTML = '';
+    document.getElementById('computer').innerHTML = '';
+    document.getElementById('login').style.display = 'flex';
+    document.getElementsByClassName('main-content')[0].style.display = 'none';
+    document.getElementById('nav-right-side').style.display = 'none';
+    document.getElementsByClassName('game-board-content')[0].style.display = 'none';
+}
+
+
 // Check if user is authenticated upon reload
-async function checkAuthStatus() {
+async function checkAuthStatusOnReload() {
     try {
+        if(!(await checkAuthStatus())) {
+            goToLogin();
+            return;
+        }
+
         const response = await fetch('/check-auth', {
             credentials: 'include'
         });
         const result = await response.json();
 
-        console.log(result);
-
-        const username = result.user.username;
-
         if (result.authenticated) {
+            const username = result.user.username;
             document.getElementById('login').style.display = 'none';   
             document.getElementsByClassName('main-content')[0].style.display = 'inline';
             const rightSideNav = document.getElementById('nav-right-side');
@@ -22,7 +39,20 @@ async function checkAuthStatus() {
         console.error("Error checking authentication:", error);
     }
 }
-window.onload = checkAuthStatus;
+window.onload = checkAuthStatusOnReload;
+
+async function checkAuthStatus() {
+    try {
+        const response = await fetch('/check-auth', {
+            credentials: 'include'
+        });
+        const result = await response.json();
+        return result.authenticated;
+    } catch (error) {
+        console.error("Error checking authentication:", error);
+        return false;
+    }
+}
 
 // Login Logic
 async function login() {
@@ -131,6 +161,11 @@ function updateOptions(selected, other) {
 // Logout logic
 async function logout() {
     try {
+        if(!(await checkAuthStatus())) {
+            goToLogin();
+            return;
+        }
+
         const response = await fetch(`/logout`, {
             method: 'POST',
             headers: {
@@ -161,6 +196,11 @@ async function logout() {
 // Create a game, called upon 'CREATE' button pressed
 async function createGame() {
     try {
+        if(!(await checkAuthStatus())) {
+            goToLogin();
+            return;
+        }
+
         const color = document.getElementById('color').value;
         const playerTokenName = document.getElementById('player').value;
         const computerTokenName = document.getElementById('computer').value;
@@ -302,6 +342,11 @@ function loadGame(game, player) {
 
 // Return to the table page after return is clicked
 async function returnToMain() {
+    if(!(await checkAuthStatus())) {
+        goToLogin();
+        return;
+    }
+
     const gameBoard = document.getElementsByClassName('game-board-content')[0];
     gameBoard.style.display = 'none';
     document.getElementsByClassName('main-content')[0].style.display = 'inline';
@@ -434,6 +479,11 @@ async function computerMove(game) {
 
 // Upon pressing the view button on client side
 async function viewGame(gameId) {
+    if(!(await checkAuthStatus())) {
+        goToLogin();
+        return;
+    }
+
     // Hide main content
     const mainContent = document.getElementsByClassName('main-content')[0];
     mainContent.style.display = 'none';

@@ -1,0 +1,39 @@
+<div *ngIf="loading" class="text-center loading">
+    <img src="assets/bulbasaur-run.gif" alt="Bulbasaur running gif">
+</div>
+
+<div class="row py-5" *ngIf="!loading">
+    <div class="col-6">
+        <div class="card-container">
+            <div class="card" *ngIf="card?.images?.large">
+                <img [src]="card.images!.large!" alt="Card image">
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card-container">
+            <div class="card">
+                <div class="card-body" >
+                    <h2 class="text-center text-decoration-underline" *ngIf="card?.name">
+                        {{ card.name! }}
+                    </h2>
+                    <p class="card-text text-center" *ngIf="setName">{{ setName }}</p>
+                    <p class="card-text text-center" *ngIf="seriesName">{{ seriesName }}</p>
+                    <p class="card-text text-center" *ngIf="cardPrices?.normalMarket">
+                        Normal Market Price: ${{ cardPrices.normalMarket!.toFixed(2) }}
+                    </p>
+                    <p class="card-text text-center" *ngIf="cardPrices?.holofoilMarket && !cardPrices?.normalMarket">
+                        Normal Market Price: ${{ cardPrices.holofoilMarket!.toFixed(2) }}
+                    </p>
+                    <p class="card-text text-center" *ngIf="cardPrices?.reverseHolofoilMarket">
+                        Reverse Holofoil Market Price: ${{ cardPrices.reverseHolofoilMarket!.toFixed(2) }}
+                    </p>
+                    <button class="btn btn-primary" (click)="addToCollection()">
+                        <i class="bi bi-heart-fill me-3"></i>
+                        <span>Add to Collection</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

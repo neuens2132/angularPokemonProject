@@ -1,0 +1,105 @@
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ForumService } from '../../services/forum/forum.service';
+import * as bootstrap from 'bootstrap';
+import { PokemonApiService } from '../../services/pokemon/pokemon.service';
+import { Forum } from '../../models/forum';
+import { User } from '../../models/user';
+import { AuthService } from '../../services/auth/auth.service';
+import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
+
+export interface ForumWithUser extends Forum {
+  user: User;
+}
+
+@Component({
+  selector: 'app-forums',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule
+  ],
+  templateUrl: './forums.component.html',
+  styleUrl: './forums.component.css'
+})
+export class ForumsComponent {
+  forums: ForumWithUser[] = [];
+  setId!: string;
+  setName!: string;
+  userId!: string;
+  currentPage = 1;
+  numPages = 0;
+  visiblePages: (number | string)[] = [];
+  loading = true;
+
+  constructor(private route: ActivatedRoute, private forumService: ForumService, private pokemonApiServce : PokemonApiService, private authService : AuthService) { }
+
+
+  ngOnInit(): void {
+    this.setId = this.route.snapshot.paramMap.get('id')!;
+    this.userId = this.authService.getCurrentUser()!.id!;
+
+    this.pokemonApiServce.getSet(this.setId).subscribe( {
+      next: res => {
+        console.log(res);
+        this.setName = res.data.name;
+      }
+    });
+
+    this.loadForumsWithUserData();
+  }
+
+  loadForumsWithUserData(page: number = 1) {
+    this.forumService.getSetForums(this.setId, page).pipe(
+      switchMap((forums: any) => {
+        console.log('Forums:', forums);
+        this.currentPage = forums.page;
+        this.numPages = forums.totalPages;
+        this.visiblePages = this.generateVisiblePages(this.currentPage, this.numPages);
+        
+        if(forums.allForums.length === 0) {
+          return of([]);
+        }
+        
+        const userRequests = forums.allForums.map((forum: any) => 
+          this.authService.getUser(forum.userId).pipe(
+            map(user => ({
+              ...forum,
+              user: user
+            })),
+          )
+        );
+        return forkJoin(userRequests) as Observable<ForumWithUser[]>;
+      })
+    ).subscribe({
+      next: (forumsWithUserData: ForumWithUser[]) => {
+        const newForums = forumsWithUserData.sort((a, b) => new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime());
+        this.forums = newForums as ForumWithUser[];
+        this.loading = false;
+        console.log('Forums with user data:', this.forums);
+      },
+      error: err => {
+        console.error('Error loading forums with user data:', err);
+      }
+    });
+  }
+
+  generateVisiblePages(current: number, total: number): (number | string)[] {
+    const pages: (number | string)[] = [];
+
+    if (total <= 7) {
+      for (let i = 1; i <= total; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      if (current > 3) pages.push('...');
+      for (let i = current - 1; i <= current + 1; i++) {
+        if (i > 1 && i < total) pages.push(i);
+      }
+      if (current < total - 2) pages.push('...');
+      pages.push(total);
+    }
+
+    return pages;
+  }
+}

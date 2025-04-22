@@ -1,0 +1,28 @@
+form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+}
+
+.forum-create-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    width: 50vb;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.btn-success {
+    margin-top: 20px;
+    display: block;
+    width: 80%;
+}
+
+.form-group {
+    width: 80%;
+}

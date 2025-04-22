@@ -1,0 +1,31 @@
+<div *ngIf="loading" class="text-center loading">
+    <img src="assets/bulbasaur-run.gif" alt="Bulbasaur running gif">
+</div>
+
+<div *ngIf="!loading">
+    <div class="set-header">
+        <h2 class="my-4 text-left">{{ setName }}</h2>
+        <button class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="View Forums"
+            [routerLink]="['/sets', id, 'forums']"><i class="bi bi-collection"></i></button>
+    </div>
+
+    <div class="card-container" *ngIf="cards.length > 0">
+        <div *ngFor="let card of cards">
+            <div class="card">
+                <div class="card-inner">
+                    <div class="card-front" *ngIf="card?.images?.small">
+                        <img [src]="card.images!.small!" alt="Card image">
+                    </div>
+                    <div class="card-back">
+                        <img src="https://pnghq.com/wp-content/uploads/pokemon-card-back-png-free-png-image-downloads-98032-768x1045.png"
+                            alt="Card image">
+                        <div class="card-buttons">
+                            <button class="card-btn view" [routerLink]="['/cards', card.id]">View</button>
+                            <button class="card-btn add" (click)="addToCollection(card)">Add To Collection</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

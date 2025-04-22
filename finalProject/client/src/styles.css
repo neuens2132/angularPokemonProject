@@ -1,0 +1,102 @@
+/* You can add global styles to this file, and also import other style files */
+
+.nav-item>.nav-link:hover {
+    cursor: pointer;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+
+
+.navbar {
+    background-color: #d7d2d0;
+
+    & .navbar-nav .nav-link {
+        color: #050504;
+        font-family: "Press Start 2P", system-ui;
+        font-size: 0.8rem;
+        font-weight: 400;
+        font-style: normal;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: transform 0.1s ease-in-out;
+
+        &:hover {
+            transform: scale(1.1);
+        }
+    }
+
+    & .navbar-brand {
+        font-family: "Bungee Spice", sans-serif;
+        text-transform: uppercase;
+        text-decoration: none;
+        font-size: 1.4rem;
+    }
+}
+
+body {
+    background-color: white;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 200;
+    font-style: normal;
+}
+
+h2 {
+    font-family: "Press Start 2P", system-ui;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+}
+
+.btn-secondary {
+    background-color: #d7d2d0;
+    color: #050504;
+    border: none;
+
+    &:hover {
+        cursor: pointer;
+        color: white;
+        filter: brightness(0.9);
+    }
+}
+
+.card-btn {
+    background-color: #FD4C2A;
+    color: white;
+    border: none;
+}
+
+.btn-danger {
+    background-color: #F93318;
+    border: none;
+}
+
+.btn-warning {
+    background-color: #FFCB05;
+    border: none;
+
+    &:hover {
+        cursor: pointer;
+        filter: brightness(0.9);
+    }
+}
+
+.btn-success {
+    background-color: #5fcb5c;
+    color: black;
+    border: none;
+
+    &:hover {
+        cursor: pointer;
+        color: black;
+    }
+}
+
+.btn-primary {
+    background-color: #2A75BB;
+    border: none;
+}

@@ -1,0 +1,56 @@
+<div *ngIf="loading" class="text-center loading">
+    <img src="assets/bulbasaur-run.gif" alt="Bulbasaur running gif">
+</div>
+
+<div class="set-header" *ngIf="!loading">
+    <h2 class="my-4 text-left">
+        {{ setName }} Forums
+    </h2>
+    <button class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Create a new forum"
+        [routerLink]="['/forums', setId, 'create']"><i class="bi bi-chat-square-text"></i></button>
+</div>
+<div *ngIf="forums.length === 0 && !loading" class="text-center my-5">
+    <p>No forums found for {{ setName }}.</p>
+    <button class="btn btn-primary" [routerLink]="['/forums', setId, 'create']">Create the first forum</button>
+</div>
+<div class="card-container" *ngIf="forums.length > 0 && !loading">
+    <div *ngFor="let forum of forums">
+        <div class="card w-100">
+            <div class="card-header">
+                <img class="card-header-img" src="assets/generic-profile-picture.png">
+                <div class="card-header-user">{{ forum.user.firstName }} {{ forum.user.lastName }}</div>
+                <div class="card-header-date">{{ forum.lastModified | date: 'short' }}</div>
+            </div>
+            <div class="card-body">
+                <p class="card-title">{{ forum.title }}</p>
+                <p class="card-text">{{ forum.description }}</p>
+            </div>
+            <button *ngIf="userId && userId === forum.user.id" class="card-btn" data-bs-toggle="tooltip"
+                data-bs-placement="right" title="Edit Forum" [routerLink]="['/forums' , forum.id, 'edit']"><i
+                    class="bi bi-pencil"></i></button>
+        </div>
+    </div>
+</div>
+
+<nav aria-label="Page navigation example" *ngIf="numPages > 1 && !loading">
+    <ul class="pagination justify-content-end">
+
+        <!-- Previous Button -->
+        <li class="page-item" [class.disabled]="currentPage === 1">
+            <button class="page-link" (click)="loadForumsWithUserData(currentPage - 1)">Previous</button>
+        </li>
+
+        <!-- Dynamic Page Numbers -->
+        <li class="page-item" *ngFor="let page of visiblePages" [class.active]="currentPage === page"
+            [class.disabled]="page === '...'">
+            <button class="page-link" (click)="page !== '...' && loadForumsWithUserData(+page)">
+                {{ page }}
+            </button>
+        </li>
+
+        <!-- Next Button -->
+        <li class="page-item" [class.disabled]="currentPage === numPages">
+            <button class="page-link" (click)="loadForumsWithUserData(currentPage + 1)">Next</button>
+        </li>
+    </ul>
+</nav>

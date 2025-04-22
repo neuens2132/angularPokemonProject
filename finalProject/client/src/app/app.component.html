@@ -1,0 +1,75 @@
+<div>
+  <header *ngIf="!authService.isLoggedIn(); else loggedInNav">
+    <nav class="navbar navbar-expand-sm">
+      <a class="navbar-brand px-3" href="#">Pokéllection</a>
+      <ul class="navbar-nav ms-auto d-flex">
+        <li class="nav-item me-5">
+          <a class="nav-link" href="#">Home</a>
+        </li>
+        <li class="nav-item me-5">
+          <a class="nav-link" routerLink="/login">Login</a>
+        </li>
+        <li class="nav-item me-5">
+          <a class="nav-link" routerLink="/signup">Sign Up</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- FOR FRONTEND DEBUGGING -->
+  <!-- <header *ngIf="!authService.isLoggedIn(); else loggedInNav">
+    <nav class="navbar navbar-expand-sm">
+      <a class="navbar-brand px-3" href="/home">
+        <span class="navbar-logo">Pokéllection</span>
+      </a>
+      <ul class="navbar-nav ms-auto d-flex">
+        <li class="nav-item me-5">
+          <a class="nav-link" href="/home">Home</a>
+        </li>
+        <li class="nav-item me-5">
+          <a class="nav-link" routerLink="/login">Login</a>
+        </li>
+        <li class="nav-item me-5">
+          <a class="nav-link" routerLink="/signup">Sign Up</a>
+        </li>
+        <li class="nav-item me-5">
+          <a class="nav-link" routerLink="/sets">Sets</a>
+        </li>
+        <li class="nav-item me-5">
+          <a class="nav-link" routerLink="/collection">Collection</a>
+        </li>
+        <li class="nav-item me-5">
+          <a class="nav-link" routerLink="/users">Users</a>
+        </li>
+      </ul>
+    </nav>
+  </header> -->
+
+  <ng-template #loggedInNav>
+    <nav class="navbar navbar-expand-sm">
+      <a class="navbar-brand px-3" href="#">Pokéllection</a>
+      <ul class="navbar-nav ms-auto d-flex px-3">
+        <li class="nav-item me-5">
+          <a class="nav-link" href="#">Home</a>
+        </li>
+        <li class="nav-item me-5">
+          <a class="nav-link" href="/sets">Sets</a>
+        </li>
+        <li class="nav-item me-5">
+          <a class="nav-link" href="/collection">Collection</a>
+        </li>
+        <li class="nav-item me-5" *ngIf="authService.isAdmin()">
+          <a class="nav-link" routerLink="/users">Users</a>
+        </li>
+        <li class="nav-item me-5">
+          <a class="nav-link" (click)="logout()">Log Out</a>
+        </li>
+      </ul>
+    </nav>
+  </ng-template>
+  
+  <main class="container">
+    <router-outlet></router-outlet>
+    <app-alert></app-alert>
+  </main>
+</div>

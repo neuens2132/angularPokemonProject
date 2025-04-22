@@ -1,0 +1,22 @@
+<div *ngIf="loading" class="text-center loading">
+    <img src="assets/bulbasaur-run.gif" alt="Bulbasaur running gif">
+</div>
+
+<form [formGroup]="forumForm" (ngSubmit)="onSubmit()">
+    <div class="forum-create-container" *ngIf="!loading">
+        <div class="set-header">
+            <h2 class="my-3 text-center">Create a forum for {{ setName }}</h2>
+        </div>
+        <div class="form-group my-3" required>
+            <label for="title">Forum Name</label>
+            <input type="text" class="form-control" id="title" formControlName="title" placeholder="Forum Title"
+                required>
+        </div>
+        <div class="form-group my-3" required>
+            <label for="exampleFormControlTextarea1">Forum Description</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="description" rows="3"
+                placeholder="Forum Description" required></textarea>
+        </div>
+        <button type="submit" class="mb-3 btn btn-success">Create Forum</button>
+    </div>
+</form>

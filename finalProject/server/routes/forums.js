@@ -65,6 +65,12 @@ router.put('/:id', async (req, res) => {
         if (!forum) {
             return res.status(404).json({ error: 'Forum not found' });
         }
+
+        const userId = forum.userId;
+        if(userId.toString() !== req.user._id.toString()) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
         res.json(forum);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -78,6 +84,12 @@ router.delete('/:id', async (req, res) => {
         if (!forum) {
             return res.status(404).json({ error: 'Forum not found' });
         }
+
+        const userId = forum.userId;
+        if(userId.toString() !== req.user._id.toString()) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        
         res.json(forum);
     } catch (error) {
         res.status(500).json({ error: error.message });

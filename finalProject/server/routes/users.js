@@ -42,6 +42,9 @@ router.post('/register', async (req, res) => {
   }
 })
 
+// I feel as if this should be restricted to the user, but the design of my forums seems to require this to be available to everyone.
+// The only way I could think to mitigate this is to change the format of how I store forums, so that it also includes user's name and avatar.
+// Otherwise loading of the forums will keep hitting this endpoint.
 router.get('/users/:id', async (req, res) => {
   try {
     const userId = new mongoose.Types.ObjectId(req.params.id);
@@ -62,7 +65,7 @@ router.put('/users/:id', async (req, res) => {
   try {
     const userId = new mongoose.Types.ObjectId(req.params.id);
 
-    if(userId.toString() !== req.user._id.toString()) {
+    if((userId.toString() !== req.user._id.toString()) && req.user.role !== 'admin') {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
@@ -70,6 +73,7 @@ router.put('/users/:id', async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
+
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -3,14 +3,21 @@ var router = express.Router();
 const User = require('../models/user');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcryptjs');
 
+// Authentication, username is email.
 passport.use(new LocalStrategy(
   { usernameField: 'email' },
   async (email, password, done) => {
     const user = await User.findOne({ email });
-    console.log(user);
 
-    if (email === user.email && password === user.password) {
+    if (!user) {
+      return done(null, false, { message: 'User not found' });
+    }
+    
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (email === user.email && isMatch) {
       return done(null, user);
     } else {
       return done(null, false, { message: 'Invalid credentials' });

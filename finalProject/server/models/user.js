@@ -1,6 +1,31 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+async function seedUsers(count = 5000) {
+    const users = [];
+
+    for (let i = 0; i < count; i++) {
+        users.push({
+            firstName: faker.name.firstName(),
+            lastName: faker.name.lastName(),
+            email: `user${i}@example.com`, // guarantees uniqueness
+            password: faker.internet.password(),
+            avatar: faker.image.avatar(),
+            status: faker.helpers.arrayElement(['active', 'inactive']),
+            role: faker.helpers.arrayElement(['user', 'admin']),
+        });
+    }
+
+    try {
+        await User.insertMany(users);
+        console.log(`${count} users inserted.`);
+    } catch (err) {
+        console.error('Failed to seed users:', err);
+    } finally {
+        mongoose.connection.close();
+    }
+}
+
 const userSchema = new Schema({
     firstName: {type: String, required: true},
     lastName: {type: String, required: true},

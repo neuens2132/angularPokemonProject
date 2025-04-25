@@ -8,6 +8,7 @@ import { AuthService } from '../services/auth/auth.service';
 export class AdminGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
+  // Ensure user is admin and logged in
   canActivate(): boolean {
     console.log(this.authService.isLoggedIn());
     console.log(this.authService.isAdmin());

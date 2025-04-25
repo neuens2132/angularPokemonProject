@@ -6,7 +6,7 @@ const cardSchema = new Schema({
     name: {type: String, required: true},
     images: { 
         small: {type: String},
-        large: {type: String }
+        large: {type: String}
     },
     quantity: {type: Number, required: true},
     price: {type: Number, required: true}

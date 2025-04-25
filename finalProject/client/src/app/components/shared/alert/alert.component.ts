@@ -16,6 +16,7 @@ export class AlertComponent implements OnInit {
 
   constructor(private alertService: AlertService) { }
 
+  // Initialize alerts
   ngOnInit(): void {
     this.alertService.getAlerts().subscribe({
       next: (alerts) => {
@@ -27,6 +28,7 @@ export class AlertComponent implements OnInit {
     });
   }
 
+  // Close alert
   closeAlert(id: number): void {
     this.alertService.removeAlert(id);
   }

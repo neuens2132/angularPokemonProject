@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 import { User } from '../../models/user';
 import { Router } from '@angular/router';
 
@@ -15,24 +15,43 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(email: string, password: string): Observable<any> {
+  // Login and store user in local storage
+  login(email: string, password: string): Observable<User> {
     return this.http.post<User>(`${this.apiUrl}/login`, { email, password }).pipe(
-      tap((response: User) => {
-        this.user = response;
-        localStorage.setItem(this.userKey, JSON.stringify(this.user));
+      tap((user) => {
+        localStorage.setItem(this.userKey, JSON.stringify(user));
       })
     );
   }
 
-  logout() {
+  // Log out and remove user from local storage
+  logout(): void {
     localStorage.removeItem(this.userKey);
     this.router.navigate(['/login']);
   }
 
+  // Locally check if user is logged in
   isLoggedIn(): boolean {
     return !!localStorage.getItem(this.userKey);
   }
 
+  // Check if user is still logged in on server side
+  verifySession(): Observable<boolean> {
+    return this.http.get<{ authenticated: boolean }>(`${this.apiUrl}/check-auth`).pipe(
+      map(response => response.authenticated),
+      catchError(() => of(false))
+    );
+  }
+
+  // Ensure user is still logged in from local storage or server
+  isStillLoggedIn(): Observable<boolean> {
+    if (!this.isLoggedIn()) {
+      return of(false);
+    }
+    return this.verifySession();
+  }
+
+  // Grab user from local storage
   getCurrentUser(): User | null {
     const userData = localStorage.getItem(this.userKey);
     return userData ? JSON.parse(userData) : null;
@@ -58,6 +77,7 @@ export class AuthService {
     return this.http.delete<any>(`${this.apiUrl}/api/users/${id}`);
   }
 
+  // Check if user is admin
   isAdmin(): boolean {
     const user = this.getCurrentUser();
     console.log(user);

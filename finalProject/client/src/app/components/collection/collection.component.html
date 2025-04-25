@@ -2,21 +2,23 @@
     <img src="assets/bulbasaur-run.gif" alt="Bulbasaur running gif">
   </div>
 
-<div class="set-header" *ngIf="!loading">
-    <h2 class="my-4 text-left">{{ user.firstName }} {{ user.lastName }}'s Collection</h2>
-    <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
-        <div class="search-container">
-            <input type="text" class="form-control search-input" id="search" formControlName="search" placeholder="Search">
-            <button type="submit" class="search-icon"><i class="bi bi-search"></i></button>
-        </div>
-    </form>
-    <div class="collection-summary" *ngIf="cards.length > 0">
-        <p><strong>Total Value:</strong> ${{ totalPrice.toFixed(2) }}</p>
+  <div class="set-header" *ngIf="!loading">
+    <div class="text-start">
+        <h2 class="my-4">{{ user.firstName }} {{ user.lastName }}'s Collection</h2>
     </div>
-</div>
 
-<div *ngIf="cards.length === 0 && !loading" class="text-center my-5">
-    <p>No cards found in your collection. Look through the <a [routerLink]="['/sets']">SETS</a> and add some!</p>
+    <div class="d-flex justify-content-center">
+        <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+            <div class="search-container">
+                <input type="text" class="form-control search-input" id="search" formControlName="search" placeholder="Search">
+                <button type="submit" class="search-icon"><i class="bi bi-search"></i></button>
+            </div>
+        </form>
+    </div>
+
+    <div class="text-end collection-summary" *ngIf="cards.length > 0">
+        <p><span class="fw-bold">Total Value</span>: ${{ totalPrice.toFixed(2) }}</p>
+    </div>
 </div>
 
 <div class="card-container" *ngIf="cards.length > 0 && !loading">
@@ -40,121 +42,8 @@
         </div>
     </div>
 </div>
-
-<!-- <div class="card-container">
-    <div class="card">
-        <div class="card-inner">
-            <div class="card-front">
-                <div class="card-quantity">2</div>
-                <img src="https://images.pokemontcg.io/svp/1.png"
-                    alt="Card image">
-            </div>
-            <div class="card-back">
-                <img src="https://pnghq.com/wp-content/uploads/pokemon-card-back-png-free-png-image-downloads-98032-768x1045.png"
-                    alt="Card image">
-                <div class="card-buttons">
-                    <button class="card-btn view">View</button>
-                    <button class="card-btn delete">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-inner">
-            <div class="card-front">
-                <img src="https://pnghq.com/wp-content/uploads/pokemon-card-back-png-free-png-image-downloads-98032-768x1045.png"
-                    alt="Card image">
-            </div>
-            <div class="card-back">
-                <img src="https://pnghq.com/wp-content/uploads/pokemon-card-back-png-free-png-image-downloads-98032-768x1045.png"
-                    alt="Card image">
-                <div class="card-buttons">
-                    <button class="card-btn view">View</button>
-                    <button class="card-btn delete">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-inner">
-            <div class="card-front">
-                <img src="https://pnghq.com/wp-content/uploads/pokemon-card-back-png-free-png-image-downloads-98032-768x1045.png"
-                    alt="Card image">
-            </div>
-            <div class="card-back">
-                <img src="https://pnghq.com/wp-content/uploads/pokemon-card-back-png-free-png-image-downloads-98032-768x1045.png"
-                    alt="Card image">
-                <div class="card-buttons">
-                    <button class="card-btn view">View</button>
-                    <button class="card-btn delete">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-inner">
-            <div class="card-front">
-                <img src="https://pnghq.com/wp-content/uploads/pokemon-card-back-png-free-png-image-downloads-98032-768x1045.png"
-                    alt="Card image">
-            </div>
-            <div class="card-back">
-                <img src="https://pnghq.com/wp-content/uploads/pokemon-card-back-png-free-png-image-downloads-98032-768x1045.png"
-                    alt="Card image">
-                <div class="card-buttons">
-                    <button class="card-btn view">View</button>
-                    <button class="card-btn delete">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-inner">
-            <div class="card-front">
-                <img src="https://pnghq.com/wp-content/uploads/pokemon-card-back-png-free-png-image-downloads-98032-768x1045.png"
-                    alt="Card image">
-            </div>
-            <div class="card-back">
-                <img src="https://pnghq.com/wp-content/uploads/pokemon-card-back-png-free-png-image-downloads-98032-768x1045.png"
-                    alt="Card image">
-                <div class="card-buttons">
-                    <button class="card-btn view">View</button>
-                    <button class="card-btn delete">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-inner">
-            <div class="card-front">
-                <img src="https://pnghq.com/wp-content/uploads/pokemon-card-back-png-free-png-image-downloads-98032-768x1045.png"
-                    alt="Card image">
-            </div>
-            <div class="card-back">
-                <img src="https://pnghq.com/wp-content/uploads/pokemon-card-back-png-free-png-image-downloads-98032-768x1045.png"
-                    alt="Card image">
-                <div class="card-buttons">
-                    <button class="card-btn view">View</button>
-                    <button class="card-btn delete">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-inner">
-            <div class="card-front">
-                <img src="https://images.pokemontcg.io/svp/1.png"
-                    alt="Card image">
-            </div>
-            <div class="card-back">
-                <img src="https://pnghq.com/wp-content/uploads/pokemon-card-back-png-free-png-image-downloads-98032-768x1045.png"
-                    alt="Card image">
-                <div class="card-buttons">
-                    <button class="card-btn view">View</button>
-                    <button class="card-btn delete">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> -->
+<div class="text-center my-5 alert alert-info" *ngIf="cards.length === 0  && !loading">
+    <h4>No cards found for <span class="fst-italic">{{ searchValue }}</span> in {{ user.firstName }} {{ user.lastName }}'s Collection. Look through the <a [routerLink]="['/sets']">SETS</a> and add some!</h4>
+</div>
 
 

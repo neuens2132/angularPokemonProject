@@ -16,8 +16,8 @@ export class PokemonApiService {
     return this.http.get<any>(`${this.apiUrl}/sets`);
   }
 
-  getCardsInSet(id: string): Observable<any[]> {
-    return this.http.get<any>(`${this.apiUrl}/cards?setId=${id}`)
+  getCardsInSet(id: string, filter?: string): Observable<any[]> {
+    return this.http.get<any>(`${this.apiUrl}/cards?setId=${id}`, { params: { filter: filter ?? "" } })
       .pipe(
         map(res => res.data)
       );

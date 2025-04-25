@@ -25,5 +25,6 @@
         </div>
         <button type="submit" class="btn btn-primary">Sign Up</button>
         <p>Already have an account? <a routerLink="/login">Login</a></p>
+        <p *ngIf="isNotValid" class="text-danger">Email already in use or invalid credentials. Please try again.</p>
     </div>
 </form>

@@ -32,6 +32,7 @@ export class AppComponent {
     });
   }
 
+  // Don't think this is working to show bootstrap tooltips, but an issue for another time.
   initializeTooltips() {
     const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.forEach(el => {

@@ -29,6 +29,7 @@ export class CardDetailsComponent {
 
   constructor(private route: ActivatedRoute, private pokemonApiService: PokemonApiService, private collectionService: CollectionService, private authService: AuthService, private alertService: AlertService) {}
 
+  // Get card details based on card id
   ngOnInit(): void {
     this.cardId = this.route.snapshot.paramMap.get('id')!;
     this.pokemonApiService.getCard(this.cardId).subscribe({
@@ -56,6 +57,7 @@ export class CardDetailsComponent {
     });
   }
 
+  // Add to collection button was pressed
   addToCollection() {
     const userId = this.authService.getCurrentUser()!.id;
     this.collectionService.getCollection(userId!).subscribe({
@@ -64,7 +66,7 @@ export class CardDetailsComponent {
         let currentCollection: Collection = res;
         let cardExists = false;
         
-        // Update existing card if found
+        // Update existing card if found in collection
         for (let i = 0; i < currentCollection.cards.length; i++) {
           if (currentCollection.cards[i].id === this.card.id) {
             currentCollection.cards[i].quantity += 1;
@@ -73,12 +75,13 @@ export class CardDetailsComponent {
           }
         }
         
+        // Ensure quantity is set to 1
         if (!cardExists) {
-          // Make sure the card has a quantity property initialized
           const cardToAdd = {...this.card, quantity: 1};
           currentCollection.cards.push(cardToAdd);
         }
   
+        // Update collection
         this.collectionService.updateCollection(currentCollection).subscribe({
           next: res => {
             console.log(res);

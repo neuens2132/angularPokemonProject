@@ -29,14 +29,29 @@ router.get('/sets/:id', async (req, res) => {
 // GET all of the cards in a single set
 router.get('/cards', async (req, res) => {
     try {
-        const { setId } = req.query;
+        const { setId, filter } = req.query;
 
         if (!setId) {
             return res.status(400).json({ error: 'setId parameter is required' });
         }
 
-        const response = await fetch(`${apiUrl}/cards?q=set.id:${setId}`);
+        // If filter is provided, add it to the query
+        let queryAddition = '';
+        if (filter && filter.trim() !== '') {
+            const encodedFilter = encodeURIComponent(filter);
+            if(filter.includes(' ')) {
+                queryAddition = `%20name:"${encodedFilter}"`;
+            } else {
+                queryAddition = `%20name:*${encodedFilter}*`;
+            }
+        }
+
+        const response = await fetch(`${apiUrl}/cards?q=set.id:${setId}${queryAddition}`);
         const data = await response.json();
+
+        if(data.data.length === 0) {
+            return res.status(404).json({ error: 'No cards found' });
+        }
         
         res.json(data);
     } catch (error) {

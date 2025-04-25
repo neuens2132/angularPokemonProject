@@ -13,5 +13,6 @@
         </div>
         <button type="submit" class="btn btn-primary">Login</button>
         <p>Don't have an account? <a routerLink="/signup">Sign Up</a></p>
+        <p *ngIf="isNotValid" class="text-danger">Invalid credentials. Please try again.</p>
     </div>
 </form>

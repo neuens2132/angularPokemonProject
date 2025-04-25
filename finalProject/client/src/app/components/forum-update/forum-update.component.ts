@@ -31,11 +31,11 @@ export class ForumUpdateComponent {
     });
   }
 
+  // Populate update page with the forum chosen to be updated
   ngOnInit(): void {
     this.forumId = this.route.snapshot.paramMap.get('id')!;
     this.forumService.getForum(this.forumId).subscribe({
       next: (forum) => {
-        console.log(forum);
         this.setId = forum.setId;
         this.forumForm.patchValue({
           forumId: this.forumId,
@@ -45,7 +45,6 @@ export class ForumUpdateComponent {
 
         this.pokemonApiServce.getSet(this.setId).subscribe({
           next: res => {
-            console.log(res);
             this.setName = res.data.name;
             this.loading = false;
           }
@@ -54,9 +53,9 @@ export class ForumUpdateComponent {
     })
   }
 
+  // Update forum
   onSubmit() {
     this.loading = true;
-    console.log(this.forumForm.value);
 
     if (this.forumForm.valid) {
       const updatedForum = {
@@ -75,6 +74,7 @@ export class ForumUpdateComponent {
     }
   }
 
+  // Delete forum
   onDelete() {
     this.forumService.deleteForum(this.forumForm.value).subscribe({
       next: () => {

@@ -15,9 +15,7 @@ export class UserTableComponent {
   currentPage = 1;
   numPages = 0;
   visiblePages: (number | string)[] = [];
-
-  // CHANGE BACK
-  loading = false;
+  loading = true;
 
   constructor(private router: Router, private authService: AuthService) { }
 
@@ -25,6 +23,7 @@ export class UserTableComponent {
     this.getUsers();
   }
 
+  // Toggle user status
   toggleStatus(user: User) {
     const newStatus = user.status === 'active' ? 'inactive' : 'active';
     const newUser = { ...user, status: newStatus };
@@ -40,19 +39,24 @@ export class UserTableComponent {
     });
   }
 
+  // Delete user
   onDelete(id: string) {
+    this.loading = true;
     this.authService.deleteUser(id).subscribe({
       next: (res) => {
-        console.log(res);
+        this.loading = false;
         this.getUsers();
       },
       error: (error) => {
+        this.loading = false;
         console.log(error);
       }
     });
   }
 
+  // Get users
   getUsers(page: number = 1): void {
+    this.loading = true;
     this.authService.getUsers(page).subscribe({
       next: (res) => {
         console.log(res);
@@ -68,6 +72,7 @@ export class UserTableComponent {
     });
   }
 
+  // Determine the numbers visible within pagination bar
   generateVisiblePages(current: number, total: number): (number | string)[] {
     const pages: (number | string)[] = [];
 

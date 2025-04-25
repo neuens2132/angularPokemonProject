@@ -1,7 +1,8 @@
 .set-header {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
+    margin: 0 2.5em;
 }
 
 .search-container {
@@ -134,4 +135,8 @@
     align-items: center;
     justify-content: center;
     font-weight: bold;
+  }
+
+  .collection-summary {
+    font-size: 1.4rem;
   }

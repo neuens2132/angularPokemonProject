@@ -3,6 +3,7 @@ var router = express.Router();
 const User = require('../models/user');
 const Forum = require('../models/forum');
 
+// GET all forums in set paginated
 router.get('/', async (req, res) => {
     try {
         const { setId } = req.query;
@@ -13,12 +14,12 @@ router.get('/', async (req, res) => {
         }
 
         const page = parseInt(req.query.page) || 1;
-        console.log(page);
         const limit = 20;
 
         const skip = (page - 1) * limit;
 
-        const allForums = await Forum.find({ setId: setId }).skip(skip).limit(limit);
+        // sort by lastModified, paginated
+        const allForums = await Forum.find({ setId: setId }).sort({ lastModified: -1 }).skip(skip).limit(limit);
         const total = await Forum.find({ setId: setId }).countDocuments();
 
         res.json({
@@ -33,6 +34,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Create a new forum
 router.post('/', async (req, res) => {
     try {
         const userId = req.user._id;
@@ -43,6 +45,7 @@ router.post('/', async (req, res) => {
     }
 });
 
+// GET a single forum
 router.get('/:id', async (req, res) => {
     try {
         const forum = await Forum.findById(req.params.id);
@@ -55,6 +58,7 @@ router.get('/:id', async (req, res) => {
     }
 })
 
+// Update a forum
 router.put('/:id', async (req, res) => {
     try {
         const forum = await Forum.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -67,6 +71,7 @@ router.put('/:id', async (req, res) => {
     }
 })
 
+// Delete a forum
 router.delete('/:id', async (req, res) => {
     try {
         const forum = await Forum.findByIdAndDelete(req.params.id);

@@ -4,13 +4,15 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 import { Collection } from '../../models/collection';
 import { CollectionService } from '../../services/collection/collection.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
     RouterModule, 
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CommonModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -18,6 +20,7 @@ import { CollectionService } from '../../services/collection/collection.service'
 export class LoginComponent {
   userForm: FormGroup;
   userId!: string;
+  isNotValid: boolean = false;
 
   constructor(private fb: FormBuilder, private router: Router, private authService : AuthService, private collectionService : CollectionService) {
     this.userForm = this.fb.group({
@@ -26,6 +29,7 @@ export class LoginComponent {
     })
   }
 
+  // Login
   onSubmit() {
     console.log(this.userForm.value);
     if (this.userForm.valid) {
@@ -50,6 +54,7 @@ export class LoginComponent {
         },
         error: () => {
           console.log("Error logging in");
+          this.isNotValid = true;
         }
       });
     }

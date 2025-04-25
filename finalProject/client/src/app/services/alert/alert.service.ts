@@ -17,6 +17,7 @@ export class AlertService {
     return this.alerts.asObservable();
   }
 
+  // Generate alert
   showAlert(message: string, type: 'success' | 'danger' | 'warning'  = 'success'): void {
     const id = this.nextId++;
     const alert: Alert = { id, message, type };
@@ -29,6 +30,7 @@ export class AlertService {
     }, 5000);
   }
 
+  // Remove alert
   removeAlert(id: number): void {
     const currentAlerts = this.alerts.getValue();
     this.alerts.next(currentAlerts.filter(alert => alert.id !== id));

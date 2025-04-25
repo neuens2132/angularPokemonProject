@@ -8,6 +8,7 @@ import { Forum } from '../../models/forum';
 import { User } from '../../models/user';
 import { AuthService } from '../../services/auth/auth.service';
 import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import { AlertService } from '../../services/alert/alert.service';
 
 export interface ForumWithUser extends Forum {
   user: User;
@@ -33,8 +34,7 @@ export class ForumsComponent {
   visiblePages: (number | string)[] = [];
   loading = true;
 
-  constructor(private route: ActivatedRoute, private forumService: ForumService, private pokemonApiServce : PokemonApiService, private authService : AuthService) { }
-
+  constructor(private route: ActivatedRoute, private forumService: ForumService, private pokemonApiServce : PokemonApiService, private authService : AuthService, private alertService: AlertService) { }
 
   ngOnInit(): void {
     this.setId = this.route.snapshot.paramMap.get('id')!;
@@ -50,10 +50,10 @@ export class ForumsComponent {
     this.loadForumsWithUserData();
   }
 
+  // Get all forums in set (pagination applied of course)
   loadForumsWithUserData(page: number = 1) {
     this.forumService.getSetForums(this.setId, page).pipe(
       switchMap((forums: any) => {
-        console.log('Forums:', forums);
         this.currentPage = forums.page;
         this.numPages = forums.totalPages;
         this.visiblePages = this.generateVisiblePages(this.currentPage, this.numPages);
@@ -74,17 +74,17 @@ export class ForumsComponent {
       })
     ).subscribe({
       next: (forumsWithUserData: ForumWithUser[]) => {
-        const newForums = forumsWithUserData.sort((a, b) => new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime());
-        this.forums = newForums as ForumWithUser[];
+        this.forums = forumsWithUserData;
         this.loading = false;
-        console.log('Forums with user data:', this.forums);
       },
       error: err => {
-        console.error('Error loading forums with user data:', err);
+        this.loading = false;
+        this.alertService.showAlert("Error loading forums", "danger");
       }
     });
   }
 
+  // Determine the numbers visible within pagination bar
   generateVisiblePages(current: number, total: number): (number | string)[] {
     const pages: (number | string)[] = [];
 

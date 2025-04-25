@@ -3,18 +3,18 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { PokemonApiService } from '../../services/pokemon/pokemon.service';
-import * as bootstrap from 'bootstrap';
 import { Card } from '../../models/card';
 import { cardPrices } from '../../models/cardPrices';
 import { CollectionService } from '../../services/collection/collection.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { Collection } from '../../models/collection';
 import { AlertService } from '../../services/alert/alert.service';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-card-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule],
   templateUrl: './card-list.component.html',
   styleUrl: './card-list.component.css'
 })
@@ -31,9 +31,16 @@ export class CardListComponent {
   alertType: 'success' | 'danger' = 'success';
   alertTimeout: any;
   loading = true;
+  searchForm!: FormGroup
+  searchValue: string = '';
 
-  constructor(private route: ActivatedRoute, private pokemonApiService: PokemonApiService, private collectionService: CollectionService, private authService: AuthService, private alertService: AlertService) { }
+  constructor(private route: ActivatedRoute, private pokemonApiService: PokemonApiService, private collectionService: CollectionService, private authService: AuthService, private alertService: AlertService) {
+    this.searchForm = new FormGroup({
+      search: new FormControl('', Validators.required)
+    });
+  }
 
+  // Get cards in set
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id')!;
     this.pokemonApiService.getCardsInSet(this.id).subscribe({
@@ -62,7 +69,43 @@ export class CardListComponent {
     });
   }
 
+  // Search applied on cards
+  onSubmit() {
+    this.loading = true;
+    this.cards = [];
+    this.searchValue = this.searchForm.value.search;
+    this.pokemonApiService.getCardsInSet(this.id, this.searchValue).subscribe({
+      next: res => {
+        res.map((card) => {
+            const normalMarket = card.tcgplayer?.prices?.normal?.market;
+            const holofoilMarket = card.tcgplayer?.prices?.holofoil?.market;
+            const reverseHolofoilMarket = card.tcgplayer?.prices?.reverseHolofoil?.market;
+
+            const price = normalMarket ?? holofoilMarket ?? reverseHolofoilMarket;
+
+            this.cards.push({
+            id: card.id,
+            name: card.name,
+            images: {
+              small: card.images?.small,
+              large: card.images?.large
+            },
+            price: price,
+            quantity: 1
+          })
+        })
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+        console.log("Error getting collection");
+      }
+    })
+  }
+
+  // Add card to collection pressed
   addToCollection(card: Card) {
+    console.log("Card: ", card);
     const userId = this.authService.getCurrentUser()!.id;
     this.collectionService.getCollection(userId!).subscribe({
       next: res => {
@@ -79,25 +122,24 @@ export class CardListComponent {
           }
         }
 
+        // Ensure quantity is set to 1
         if (!cardExists) {
-          // Make sure the card has a quantity property initialized
           const cardToAdd = { ...card, quantity: 1 };
           currentCollection.cards.push(cardToAdd);
         }
 
+        // Update collection
         this.collectionService.updateCollection(currentCollection).subscribe({
           next: res => {
-            console.log(res);
             this.alertService.showAlert("Card added to collection");
           },
           error: () => {
-            console.log("Error updating collection");
             this.alertService.showAlert("Error adding card to collection", "danger");
           }
         });
       },
       error: () => {
-        console.log("Error getting collection");
+        this.alertService.showAlert("Error loading collection", "danger");
       }
     });
   }

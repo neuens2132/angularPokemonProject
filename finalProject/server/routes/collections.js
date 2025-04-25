@@ -4,6 +4,8 @@ const User = require('../models/user');
 const Collection = require('../models/collection');
 const mongoose = require('mongoose');
 
+
+// GET'S a collection based on userId
 router.get('/:id', async (req, res) => {
     try {
         const userId = new mongoose.Types.ObjectId(req.params.id);
@@ -11,6 +13,12 @@ router.get('/:id', async (req, res) => {
 
         if (!userId) {
             return res.status(400).json({ error: 'userId parameter is required' });
+        }
+
+        console.log(userId);
+        console.log(req.user._id);
+        if(userId.toString() !== req.user._id.toString()) {
+            return res.status(401).json({ error: 'Unauthorized' });
         }
 
         const curCollection = await Collection.findOne({ userId });
@@ -36,9 +44,16 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+// Create a new collection for a user based on userId
 router.post('/:id', async (req, res) => {
     try {
-        const existingCollection = await Collection.findOne({ userId: req.params.id });
+        const userId = new mongoose.Types.ObjectId(req.params.id);
+
+        if(userId.toString() !== req.user._id.toString()) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const existingCollection = await Collection.findOne({ userId: userId });
         if (existingCollection) {
             return res.status(400).json({ error: 'Collection already exists' });
         }
@@ -50,11 +65,14 @@ router.post('/:id', async (req, res) => {
     }
 })
 
+// Update a collection based on userId
 router.put('/:id', async (req, res) => {
     try {
         const userId = new mongoose.Types.ObjectId(req.params.id);
-        console.log(req.body);
-        console.log(userId);
+        
+        if(userId.toString() !== req.user._id.toString()) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
 
         const collection = await Collection.findOneAndUpdate( {userId: userId} , req.body, { new: true });
         if (!collection) {
@@ -66,10 +84,14 @@ router.put('/:id', async (req, res) => {
     }
 })
 
+// Delete a collection based on userId
 router.delete('/:id', async (req, res) => {
     try {
         const userId = mongoose.Types.ObjectId(req.params.id);
-        console.log(userId);
+
+        if(userId.toString() !== req.user._id.toString()) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
 
         const collection = await Collection.findOneAndDelete( {userId: userId} );
         if (!collection) {

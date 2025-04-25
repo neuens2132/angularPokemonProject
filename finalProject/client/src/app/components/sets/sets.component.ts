@@ -18,6 +18,7 @@ export class SetsComponent implements OnInit {
 
   constructor(private pokemonApiService: PokemonApiService) { }
 
+  // Get all sets
   ngOnInit(): void {
     this.pokemonApiService.getSets().subscribe({
       next: response => {

@@ -11,22 +11,18 @@ export class CollectionService {
 
   constructor(private http: HttpClient) { }
 
-  // When a user selects on the collection page.
   getCollection(userId: string, searchValue?: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${userId}`, { params: { searchValue: searchValue ?? "" } });
   }
 
-  // When a user creates an account.
   createCollection(collection: Collection): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/${collection.userId}`, collection);
   }
 
-  // When clicking the button on a given card's info.
   updateCollection(collection: Collection): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/${collection.userId}`, collection);
   }
 
-  // Will be deleted when a user is deleted.
   deleteCollection(collection: Collection): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${collection.userId}`);
   } 

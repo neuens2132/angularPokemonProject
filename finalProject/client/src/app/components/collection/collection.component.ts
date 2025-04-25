@@ -23,6 +23,7 @@ export class CollectionComponent {
   searchForm!: FormGroup;
   totalPrice: number = 0;
   loading = true;
+  searchValue: string = '';
 
   constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService, private collectionService: CollectionService, private alertService: AlertService) {
     this.searchForm = new FormGroup({
@@ -30,12 +31,12 @@ export class CollectionComponent {
     });  
   }
 
+  // Get collection
   ngOnInit(): void {
     this.user = this.authService.getCurrentUser()!;
 
     this.collectionService.getCollection(this.user.id!).subscribe({
       next: res => {
-        console.log(res);
         this.collection = res;
         this.cards = res.cards;
         this.getTotalPrice();
@@ -48,24 +49,27 @@ export class CollectionComponent {
 
   }
 
+  // Search applied on cards in collection
   onSubmit() {
     this.loading = true;
-    const searchValue = this.searchForm.value.search;
-    this.collectionService.getCollection(this.user.id!, searchValue).subscribe({
+    this.searchValue = this.searchForm.value.search;
+    this.collectionService.getCollection(this.user.id!, this.searchValue).subscribe({
       next: res => {
-        console.log(res);
         this.cards = res.cards;
         this.getTotalPrice();
         this.loading = false;
       },
       error: () => {
         console.log("Error getting collection");
+        this.loading = false;
       }
     })
   }
 
+  // Remove card from collection
   deleteCard(cardId: string) {
     const updatedCards = this.collection.cards.map(card => {
+      // Simply decrease quantity if > 1 otherwise remove
       if (card.id === cardId) {
         if (card.quantity > 1) {
           return { ...card, quantity: card.quantity - 1 };
@@ -75,11 +79,10 @@ export class CollectionComponent {
       return card;
     }).filter(card => card !== null);
   
+    // Update collection
     const newCollection: Collection = { ...this.collection, cards: updatedCards };
-  
     this.collectionService.updateCollection(newCollection).subscribe({
       next: res => {
-        console.log(res);
         this.collection = res;
         this.cards = res.cards;
         this.getTotalPrice();
@@ -87,12 +90,12 @@ export class CollectionComponent {
         this.searchForm.reset();
       },
       error: () => {
-        console.log("Error updating collection");
         this.alertService.showAlert("Error removing card from collection");
       }
     });
   }
 
+  // Calculate total price
   getTotalPrice() {
     this.totalPrice = this.cards.reduce((acc, card) => {
       const price = card.price || 0;

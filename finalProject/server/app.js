@@ -18,6 +18,7 @@ var user = require('./routes/users');
 var forum = require('./routes/forums');
 var collection = require('./routes/collections');
 var pokemon = require('./routes/pokemon');
+const Collection = require('./models/collection');
 
 var app = express();
 
@@ -34,7 +35,7 @@ app.use(session({
   saveUninitialized: false,
   rolling: true,
   cookie: {
-    expires: 60000,
+    expires: 1000000,
     httpOnly: true,
     secure: false
   }
@@ -42,7 +43,7 @@ app.use(session({
 
 // Database connection
 mongoose.connect('mongodb://138.49.184.232:27017/final_project_neuens')
-  .then(() => {
+  .then(async () => {
     console.log('Connected to MongoDB');
   })
   .catch(err => console.error('Could not connect to MongoDB', err));
@@ -60,7 +61,6 @@ app.use('/api', guard);
 app.use('/api/forums', forum);
 app.use('/api/collection', collection);
 app.use('/api/pokemon', pokemon);
-
 
 app.use('*', (req, res, next) => {
   res.sendFile(path.join(__dirname, 'public/index.html'));

@@ -26,11 +26,11 @@ export class ForumCreateComponent {
 
   constructor(private fb: FormBuilder, private router: Router, private forumService : ForumService, private route: ActivatedRoute, private pokemonApiServce : PokemonApiService) { }
 
+  // Populate create page with set name and empty form
   ngOnInit(): void {
     this.setId = this.route.snapshot.paramMap.get('id')!;
     this.pokemonApiServce.getSet(this.setId).subscribe( {
       next: res => {
-        console.log(res);
         this.setName = res.data.name;
         this.loading = false;
       }
@@ -43,8 +43,8 @@ export class ForumCreateComponent {
     })
   }
 
+  // Create forum
   onSubmit() {
-    console.log(this.forumForm.value);
     if (this.forumForm.valid) {
       this.forumService.createForum(this.forumForm.value).subscribe({
         next: () => {

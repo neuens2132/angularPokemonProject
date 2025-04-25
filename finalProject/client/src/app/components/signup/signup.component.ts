@@ -5,13 +5,15 @@ import { AuthService } from '../../services/auth/auth.service';
 import { FormGroup, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { CollectionService } from '../../services/collection/collection.service';
 import { Collection } from '../../models/collection';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
   imports: [
     RouterModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CommonModule
   ],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
@@ -19,6 +21,7 @@ import { Collection } from '../../models/collection';
 export class SignupComponent {
   userForm: FormGroup;
   userId!: string;
+  isNotValid: boolean = false;
 
   constructor(private fb: FormBuilder, private router: Router, private authService : AuthService, private collectionService : CollectionService) {
     this.userForm = this.fb.group({
@@ -29,6 +32,7 @@ export class SignupComponent {
     })
   }
 
+  // Sign up, navigate to login upon success
   onSubmit() {
     console.log(this.userForm.value);
     if (this.userForm.valid) {
@@ -39,6 +43,7 @@ export class SignupComponent {
         },
         error: () => {
           console.log("Error creating user");
+          this.isNotValid = true;
         }
       });
     }

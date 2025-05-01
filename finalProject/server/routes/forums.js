@@ -38,7 +38,11 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const userId = req.user._id;
-        const forum = await Forum.create({ ...req.body, userId });
+        const forum = await Forum.create({ 
+            ...req.body,
+            userFirstName: req.user.firstName,
+            userLastName: req.user.lastName,
+            userId: userId });
         res.json(forum);
     } catch (error) {
         res.status(500).json({ error: error.message });

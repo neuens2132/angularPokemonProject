@@ -10,9 +10,6 @@ import { AuthService } from '../../services/auth/auth.service';
 import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { AlertService } from '../../services/alert/alert.service';
 
-export interface ForumWithUser extends Forum {
-  user: User;
-}
 
 @Component({
   selector: 'app-forums',
@@ -25,7 +22,7 @@ export interface ForumWithUser extends Forum {
   styleUrl: './forums.component.css'
 })
 export class ForumsComponent {
-  forums: ForumWithUser[] = [];
+  forums: Forum[] = [];
   setId!: string;
   setName!: string;
   userId!: string;
@@ -52,36 +49,20 @@ export class ForumsComponent {
 
   // Get all forums in set (pagination applied of course)
   loadForumsWithUserData(page: number = 1) {
-    this.forumService.getSetForums(this.setId, page).pipe(
-      switchMap((forums: any) => {
-        this.currentPage = forums.page;
-        this.numPages = forums.totalPages;
+    this.forumService.getSetForums(this.setId, page).subscribe({
+      next: (res) => {
+        console.log(res);
+        this.forums = res.allForums;
+        this.currentPage = res.page;
+        this.numPages = res.totalPages;
         this.visiblePages = this.generateVisiblePages(this.currentPage, this.numPages);
-        
-        if(forums.allForums.length === 0) {
-          return of([]);
-        }
-        
-        const userRequests = forums.allForums.map((forum: any) => 
-          this.authService.getUser(forum.userId).pipe(
-            map(user => ({
-              ...forum,
-              user: user
-            })),
-          )
-        );
-        return forkJoin(userRequests) as Observable<ForumWithUser[]>;
-      })
-    ).subscribe({
-      next: (forumsWithUserData: ForumWithUser[]) => {
-        this.forums = forumsWithUserData;
         this.loading = false;
       },
-      error: err => {
-        this.loading = false;
+      error: (error) => {
+        console.log(error);
         this.alertService.showAlert("Error loading forums", "danger");
       }
-    });
+    })
   }
 
   // Determine the numbers visible within pagination bar
@@ -89,7 +70,9 @@ export class ForumsComponent {
     const pages: (number | string)[] = [];
 
     if (total <= 7) {
-      for (let i = 1; i <= total; i++) pages.push(i);
+      for (let i = 1; i <= total; i++){
+        pages.push(i);
+      };
     } else {
       pages.push(1);
       if (current > 3) pages.push('...');

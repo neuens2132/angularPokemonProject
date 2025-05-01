@@ -31,7 +31,6 @@ const userSchema = new Schema({
     lastName: {type: String, required: true},
     email: {type: String, required: true, unique: true},
     password: {type: String, required: true},
-    avatar: {type: String, default: 'https://ts2.mm.bing.net/th?id=OIP.qOSjSxoUNci9aPL9spX_eQHaHa&pid=15.1'},
     status: {type: String, enum: ['active', 'inactive'], default: 'active'},
     role: {type: String, enum: ['user', 'admin'], default: 'user'},
     createdAt: {type: Date, default: Date.now},

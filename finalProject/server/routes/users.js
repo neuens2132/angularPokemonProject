@@ -9,6 +9,10 @@ const Forum = require('../models/forum');
 // GET all users, paginated
 router.get('/users', async (req, res) => {
   try {
+    if(req.user.role !== 'admin') {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
     const page = parseInt(req.query.page) || 1;
     const limit = 50;
 
@@ -42,13 +46,14 @@ router.post('/register', async (req, res) => {
   }
 })
 
-// I feel as if this should be restricted to the user, but the design of my forums seems to require this to be available to everyone.
-// The only way I could think to mitigate this is to change the format of how I store forums, so that it also includes user's name and avatar.
-// Otherwise loading of the forums will keep hitting this endpoint.
+// Fetch a user based on userId
 router.get('/users/:id', async (req, res) => {
   try {
     const userId = new mongoose.Types.ObjectId(req.params.id);
-    console.log(userId);
+    
+    if((userId.toString() !== req.user._id.toString())) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
 
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -60,7 +65,7 @@ router.get('/users/:id', async (req, res) => {
   }
 })
 
-// Update a user
+// Update a user based on userId
 router.put('/users/:id', async (req, res) => {
   try {
     const userId = new mongoose.Types.ObjectId(req.params.id);
@@ -80,7 +85,7 @@ router.put('/users/:id', async (req, res) => {
   }
 })
 
-// Delete a user
+// Delete a user based on userId
 router.delete('/users/:id', async (req, res) => {
   try {
     const userId = new mongoose.Types.ObjectId(req.params.id);

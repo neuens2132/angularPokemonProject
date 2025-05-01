@@ -3,6 +3,8 @@ const Schema = mongoose.Schema;
 
 const forumSchema = new Schema({
     userId: {type: Schema.ObjectId, required: true, ref: 'User'},
+    userFirstName: {type: String, required: true},
+    userLastName: {type: String, required: true},
     setId: {type: String, required: true},
     title: {type: String, required: true},
     description: {type: String, required: true},

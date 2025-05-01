@@ -32,9 +32,8 @@ export class SetsComponent implements OnInit {
           groupedMap[set.series].push(set);
         });
   
-        // Convert to array with release date info
+        // Sort sets by release date
         const groupedArray = Object.entries(groupedMap).map(([series, sets]) => {
-          // Sort the sets within the series
           sets.sort((a, b) =>
             new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()
           );
@@ -46,7 +45,7 @@ export class SetsComponent implements OnInit {
           };
         });
   
-        // Sort the groups by latest release date (descending)
+        // Sort series
         groupedArray.sort(
           (a, b) => b.latestRelease.getTime() - a.latestRelease.getTime()
         );

@@ -14,7 +14,6 @@ export class HomeComponent {
 
   constructor(private router: Router, private authService: AuthService) { }
 
-  // Will change the text of paragraph and button
   ngOnInit(): void {
     if(this.authService.isLoggedIn()) {
       this.loggedIn = true;

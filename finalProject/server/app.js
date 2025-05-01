@@ -6,6 +6,13 @@ var createError = require('http-errors');
 var cors = require('cors');
 var logger = require('morgan');
 
+//temp for loading
+var bcrypt = require('bcryptjs');
+var { faker } = require('@faker-js/faker');
+var User = require('./models/user');
+var Collection = require('./models/collection');
+var Forum = require('./models/forum');
+
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -18,7 +25,6 @@ var user = require('./routes/users');
 var forum = require('./routes/forums');
 var collection = require('./routes/collections');
 var pokemon = require('./routes/pokemon');
-const Collection = require('./models/collection');
 
 var app = express();
 
@@ -43,10 +49,11 @@ app.use(session({
 
 // Database connection
 mongoose.connect('mongodb://138.49.184.232:27017/final_project_neuens')
-  .then(async () => {
+  .then(() => {
     console.log('Connected to MongoDB');
   })
   .catch(err => console.error('Could not connect to MongoDB', err));
+
 
 
 // Authentication

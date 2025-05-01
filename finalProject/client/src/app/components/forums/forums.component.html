@@ -18,14 +18,14 @@
         <div class="card w-100">
             <div class="card-header">
                 <img class="card-header-img" src="assets/generic-profile-picture.png">
-                <div class="card-header-user">{{ forum.user.firstName }} {{ forum.user.lastName }}</div>
+                <div class="card-header-user">{{ forum.userFirstName }} {{ forum.userLastName }}</div>
                 <div class="card-header-date">{{ forum.lastModified | date: 'short' }}</div>
             </div>
             <div class="card-body">
                 <p class="card-title">{{ forum.title }}</p>
                 <p class="card-text">{{ forum.description }}</p>
             </div>
-            <button *ngIf="userId && userId === forum.user.id" class="card-btn" data-bs-toggle="tooltip"
+            <button *ngIf="userId && userId === forum.userId" class="card-btn" data-bs-toggle="tooltip"
                 data-bs-placement="right" title="Edit Forum" [routerLink]="['/forums' , forum.id, 'edit']"><i
                     class="bi bi-pencil"></i></button>
         </div>

@@ -14,9 +14,7 @@ router.get('/:id', async (req, res) => {
         if (!userId) {
             return res.status(400).json({ error: 'userId parameter is required' });
         }
-
-        console.log(userId);
-        console.log(req.user._id);
+        
         if(userId.toString() !== req.user._id.toString()) {
             return res.status(401).json({ error: 'Unauthorized' });
         }

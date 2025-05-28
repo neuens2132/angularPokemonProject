@@ -5,7 +5,7 @@
 <div class="row py-5" *ngIf="!loading">
     <div class="col-6">
         <div class="card-container">
-            <div class="card" *ngIf="card?.images?.large">
+            <div class="card card-reflect" *ngIf="card?.images?.large" #cardRef>
                 <img [src]="card.images!.large!" alt="Card image">
             </div>
         </div>

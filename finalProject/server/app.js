@@ -5,6 +5,7 @@ var passport = require('passport');
 var createError = require('http-errors');
 var cors = require('cors');
 var logger = require('morgan');
+require('dotenv').config();
 
 //temp for loading
 var bcrypt = require('bcryptjs');
@@ -47,12 +48,31 @@ app.use(session({
   }
 }));
 
-// Database connection
-mongoose.connect('mongodb://138.49.184.232:27017/final_project_neuens')
-  .then(() => {
+const url = process.env.MONGODB_URI;
+const clientOptions = {
+  serverApi: {
+    version: '1',
+    strict: true,
+    deprecationErrors: true
+  }
+}
+
+async function connect() {
+  try {
+    await mongoose.connect(url, clientOptions);
     console.log('Connected to MongoDB');
-  })
-  .catch(err => console.error('Could not connect to MongoDB', err));
+  } catch (err) {
+    console.error('Could not connect to MongoDB', err);
+  }
+}
+
+connect();
+// Database connection
+// mongoose.connect('mongodb://138.49.184.232:27017/final_project_neuens')
+//   .then(() => {
+//     console.log('Connected to MongoDB');
+//   })
+//   .catch(err => console.error('Could not connect to MongoDB', err));
 
 
 

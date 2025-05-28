@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { PokemonApiService } from '../../services/pokemon/pokemon.service';
 import { CollectionService } from '../../services/collection/collection.service';
@@ -15,7 +15,7 @@ import { AlertService } from '../../services/alert/alert.service';
   templateUrl: './card-details.component.html',
   styleUrl: './card-details.component.css'
 })
-export class CardDetailsComponent {
+export class CardDetailsComponent implements AfterViewChecked {
   card!: Card;
   cardPrices: cardPrices = {
     normalMarket: null,
@@ -26,6 +26,7 @@ export class CardDetailsComponent {
   seriesName: string = '';
   setName: string = '';
   loading = true;
+  angle = 10;
 
   constructor(private route: ActivatedRoute, private pokemonApiService: PokemonApiService, private collectionService: CollectionService, private authService: AuthService, private alertService: AlertService) {}
 
@@ -56,6 +57,44 @@ export class CardDetailsComponent {
       }
     });
   }
+
+@ViewChild('cardRef', { static: false }) cardRef!: ElementRef;
+private hasListener = false;
+
+ngAfterViewChecked(): void {
+  if (!this.loading && this.cardRef && !this.hasListener) {
+    this.hasListener = true;
+    const angle = this.angle;
+    const card = this.cardRef.nativeElement as HTMLElement;
+
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const w = card.clientWidth;
+      const h = card.clientHeight;
+
+      const rotateY = ((x - w / 2) / w) * angle * 2;
+      const rotateX = ((h / 2 - y) / h) * angle * 2;
+
+      card.style.transform = `
+        perspective(1000px)
+        rotateX(${rotateX}deg)
+        rotateY(${rotateY}deg)
+      `;
+      card.style.transition = 'transform 0.1s ease-out';
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = `
+        rotateX(0deg)
+        rotateY(0deg)
+      `;
+      card.style.transition = 'transform 0.3s ease-in-out';
+    });
+  }
+}
 
   // Add to collection button was pressed
   addToCollection() {
